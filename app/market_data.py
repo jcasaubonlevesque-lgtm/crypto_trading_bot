@@ -1,12 +1,15 @@
 import pandas as pd
 from binance.client import Client
-from app.config import API_KEY, API_SECRET, SYMBOL, INTERVAL, LIMIT
+from app.config import API_KEY, API_SECRET, SYMBOLS, PRIMARY_SYMBOL, INTERVAL, LIMIT
 
 client = Client(API_KEY, API_SECRET)
 
 
-def get_klines(symbol=SYMBOL, interval=INTERVAL, limit=LIMIT):
-    candles = client.get_klines(symbol=symbol, interval=interval, limit=limit)
+def get_klines(symbol=PRIMARY_SYMBOL, interval=INTERVAL, limit=LIMIT):
+    try:
+        candles = client.get_klines(symbol=symbol, interval=interval, limit=limit)
+    except Exception as exc:
+        raise RuntimeError(f"Erreur de récupération des données Binance pour {symbol}: {exc}")
 
     df = pd.DataFrame(candles, columns=[
         "open_time", "open", "high", "low", "close", "volume",
@@ -23,6 +26,6 @@ def get_klines(symbol=SYMBOL, interval=INTERVAL, limit=LIMIT):
     return df
 
 
-def get_current_price(symbol=SYMBOL):
+def get_current_price(symbol=PRIMARY_SYMBOL):
     ticker = client.get_symbol_ticker(symbol=symbol)
     return float(ticker["price"])

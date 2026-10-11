@@ -1,11 +1,21 @@
-# Crypto Trading Bot Pro
+# Crypto Trading Bot Premium
 
-Bot de trading crypto en mode paper trading avec :
+Bot de trading crypto orienté pro pour un usage en paper trading et en analyse avancée.
+
+Fonctionnalités principales :
 - API Binance
-- stratégie EMA + MACD + RSI
+- stratégie EMA + MACD + RSI + ATR
 - gestion du risque
-- dashboard Streamlit
-- backtesting
+- backtesting historique
+- tableau de bord Streamlit
+- logs détaillés
+- alertes Telegram optionnelles
+
+## Prérequis
+
+- Python 3.10+
+- Compte Binance (optionnel pour données publiques / tests)
+- Clés API Binance si tu veux passer en mode réel ensuite
 
 ## Installation
 
@@ -17,11 +27,13 @@ pip install -r requirements.txt
 
 ## Configuration
 
-Copie le fichier d'exemple et renseigne tes clés Binance si tu souhaites utiliser l'API réelle :
+Copie le fichier d'exemple et renseigne tes variables :
 
 ```bash
 cp .env.example .env
 ```
+
+Puis mets tes clés API Binance si tu veux aller plus loin.
 
 ## Lancer le bot
 
@@ -35,8 +47,20 @@ python main.py
 streamlit run app/dashboard.py
 ```
 
-## Important
+## Lancer un backtest
 
-- Ce projet est destiné à des fins éducatives.
+Tu peux utiliser une petite commande Python :
+
+```python
+from app.backtest import run_backtest
+
+result = run_backtest(initial_balance=100.0, symbol="BTCUSDT")
+print(result)
+```
+
+## Points importants
+
+- Ce projet est conçu pour la recherche et l'apprentissage.
 - Le mode par défaut est paper trading.
-- N'utilise pas d'argent réel sans validation et tests approfondis.
+- N'utilise pas d'argent réel sans validation approfondie.
+- Le système est extensible pour ajouter des alertes, des stratégies, ou des integrations de trading réel.
