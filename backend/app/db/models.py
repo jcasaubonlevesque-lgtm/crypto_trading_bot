@@ -14,12 +14,13 @@ class User(Base):
     is_premium = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
-    positions = relationship("Position", back_populates="user")
+    api_keys = relationship("ApiKey", back_populates="user")
     subscriptions = relationship("Subscription", back_populates="user")
     signals = relationship("Signal", back_populates="user")
     trades = relationship("Trade", back_populates="user")
+    positions = relationship("Position", back_populates="user")
 
-class APIKey(Base):
+class ApiKey(Base):
     __tablename__ = "api_keys"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -29,15 +30,17 @@ class APIKey(Base):
     encrypted_secret = Column(String, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
+    user = relationship("User", back_populates="api_keys")
+
 class Strategy(Base):
     __tablename__ = "strategies"
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     name = Column(String, nullable=False)
-    type = Column(String, nullable=False)
+    strategy_type = Column(String, nullable=False)
     enabled = Column(Boolean, default=True)
-    params = Column(String, default="{}")
+    params = Column(String, default='{}')
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 class Position(Base):

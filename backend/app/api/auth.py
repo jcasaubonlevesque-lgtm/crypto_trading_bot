@@ -1,26 +1,18 @@
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from app.db.base import get_db
-from app.db.models import User
+from app.db.models import User, Subscription
 from app.core.security import hash_password, verify_password, create_token
+from app.schemas.models import UserRegisterRequest, UserLoginRequest, UserResponse, TokenResponse
 
 router = APIRouter()
 
-class RegisterInput(BaseModel):
-    email: EmailStr
-    full_name: str
-    password: str
-
-class LoginInput(BaseModel):
-    email: EmailStr
-    password: str
-
-@router.post("/register")
-async def register(payload: RegisterInput, db: Session = Depends(get_db)):
-    existing = db.query(User).filter(User.email == payload.email).first()
+@router.post("/register", response_model=TokenResponse)
+async def register(payload: UserRegisterRequest, db: Session = Depends(get_db)):
+    existing = db.query(User).filter(User.email == str(payload.email)).first()
     if existing:
-        raise HTTPException(status_code=400, detail="User already exists")
+        raise HTTPException(status_code=400, detail="Email already in use")
 
     user = User(
         email=str(payload.email),
@@ -41,8 +33,8 @@ async def register(payload: RegisterInput, db: Session = Depends(get_db)):
         "expires_in": 3600,
     }
 
-@router.post("/login")
-async def login(payload: LoginInput, db: Session = Depends(get_db)):
+@router.post("/login", response_model=TokenResponse)
+async def login(payload: UserLoginRequest, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == str(payload.email)).first()
     if not user:
         raise HTTPException(status_code=401, detail="Invalid credentials")
@@ -55,4 +47,15 @@ async def login(payload: LoginInput, db: Session = Depends(get_db)):
         "refresh_token": token,
         "token_type": "bearer",
         "expires_in": 3600,
+    }
+
+@router.get("/me", response_model=UserResponse)
+async def me():
+    return {
+        "id": 1,
+        "email": "demo@avantops.ai",
+        "full_name": "Demo User",
+        "is_active": True,
+        "is_premium": False,
+        "created_at": "2025-01-01T00:00:00Z",
     }
