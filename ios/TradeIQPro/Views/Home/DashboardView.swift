@@ -8,6 +8,9 @@ struct DashboardView: View {
                     Text("AVANTOPS AI")
                         .font(.largeTitle)
                         .bold()
+                    Text("AI-powered crypto trading intelligence")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
 
                     HStack {
                         MetricCard(title: "Portfolio", value: "$124,500")

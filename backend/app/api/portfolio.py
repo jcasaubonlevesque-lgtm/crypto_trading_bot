@@ -1,20 +1,21 @@
 from fastapi import APIRouter
+from app.services.trading_service import TradingService
 
 router = APIRouter()
+service = TradingService()
 
 @router.get("/summary")
 async def portfolio_summary():
+    snapshot = service.get_portfolio_snapshot(balance_usdt=100.0)
     return {
-        "balance_usdt": 100.0,
-        "total_value": 120.0,
-        "pnl_24h": 2.5,
-        "pnl_24h_percent": 2.4,
-        "positions": [
-            {"symbol": "BTCUSDT", "quantity": 0.02, "entry_price": 45000.0, "current_price": 47000.0, "pnl": 400.0, "pnl_percent": 4.2},
-            {"symbol": "ETHUSDT", "quantity": 0.50, "entry_price": 2500.0, "current_price": 2600.0, "pnl": 50.0, "pnl_percent": 2.0},
-        ],
+        "balance_usdt": snapshot["balance_usdt"],
+        "total_value": snapshot["total_value"],
+        "pnl_24h": snapshot["pnl_24h"],
+        "pnl_24h_percent": snapshot["pnl_24h_percent"],
+        "positions": snapshot["positions"],
     }
 
 @router.get("/positions")
 async def positions():
-    return [{"symbol": "BTCUSDT", "quantity": 0.02, "entry_price": 45000.0, "current_price": 47000.0, "pnl": 400.0}]
+    snapshot = service.get_portfolio_snapshot(balance_usdt=100.0)
+    return snapshot["positions"]

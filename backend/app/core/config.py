@@ -21,12 +21,15 @@ class Settings(BaseSettings):
     smtp_user: str = ""
     smtp_password: str = ""
     sentry_dsn: str = ""
+    cipher_key: str = "T0NwR0QxZXF1RTN4Wm5nV0R4bjRnb1JxQ2t0bU1iS1A="
     allowed_origins: List[str] = ["*"]
     paper_mode_default: bool = True
     initial_balance: float = 100.0
     position_risk_percent: float = 1.0
     stop_loss_percent: float = 2.5
     take_profit_percent: float = 5.0
+    premium_monthly_price: float = 9.99
+    premium_yearly_price: float = 79.00
 
     class Config:
         env_file = ".env"

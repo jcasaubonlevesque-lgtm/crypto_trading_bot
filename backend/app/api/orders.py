@@ -12,16 +12,25 @@ class PlaceOrderInput(BaseModel):
 
 @router.get("/")
 async def list_orders():
-    return [{"id": 1, "symbol": "BTCUSDT", "side": "BUY", "quantity": 0.01, "price": 45000.0, "status": "executed", "paper_mode": True}]
+    return [{
+        "id": 1,
+        "symbol": "BTCUSDT",
+        "side": "BUY",
+        "quantity": 0.01,
+        "price": 45000.0,
+        "status": "executed",
+        "paper_mode": True,
+    }]
 
 @router.post("/place")
 async def place_order(payload: PlaceOrderInput):
+    status = "executed" if payload.paper_mode else "pending_confirmation"
     return {
         "id": 101,
         "symbol": payload.symbol,
         "side": payload.side,
         "quantity": payload.quantity,
         "price": payload.price,
-        "status": "pending_confirmation",
+        "status": status,
         "paper_mode": payload.paper_mode,
     }
